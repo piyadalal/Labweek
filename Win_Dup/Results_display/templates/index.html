@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch JSON Data</title>
+    <script>
+        function fetchData() {
+            fetch('/get_data')
+                .then(response => response.json())
+                .then(data => {
+                    let resultHTML = '<h2>Results:</h2>';
+                    const tags = data.tags;
+
+                    tags.forEach(tag => {
+                        tag.actions.forEach(action => {
+                            if (action.actionType === 'VisualSearch') {
+                                action.data.value.forEach(item => {
+                                    resultHTML += `
+                                        <div>
+                                            <h3>${item.name}</h3>
+                                            <a href="${item.webSearchUrl}" target="_blank">Web Search</a><br>
+                                            <img src="${item.thumbnailUrl}" alt="${item.name}" style="width: 200px; height: auto;">
+                                        </div>
+                                    `;
+                                });
+                            }
+                        });
+                    });
+                    document.getElementById('result').innerHTML = resultHTML;
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Fetch JSON Data Example</h1>
+    <button onclick="fetchData()">Get JSON Data</button>
+    <div id="result"></div>
+</body>
+</html>
